@@ -1,0 +1,40 @@
+---
+version: '3'
+services:
+  steve-location-api:
+    image: steve-location-api:latest
+    container_name: steve-location-api
+    environment:
+      PORT: "8080"
+      RABBIT_HOST: "rabbit"
+      RABBIT_PORT: "5672"
+      RABBIT_CONNECTION_ATTEMPTS: 10
+      RABBIT_RETRY_DELAY: 3
+      CHANNEL_EXCHANGE: "location"
+      CHANNEL_TOPIC: "location"
+    ports:
+      - 8080:8080
+    links:
+      - rabbit
+  steve-calendar-api:
+    image: steve-calendar-api:latest
+    container_name: steve-calendar-api
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    env_file:
+      - .google_credentials
+    environment:
+      RABBIT_HOST: "rabbit"
+      RABBIT_PORT: "5672"
+      RABBIT_CONNECTION_ATTEMPTS: 10
+      RABBIT_RETRY_DELAY: 3
+      CHANNEL_EXCHANGE: "location"
+      CHANNEL_TOPIC: "location"
+    links:
+      - rabbit
+  rabbit:
+    image: rabbitmq:3
+    container_name: rabbit
+    ports:
+      - 5672:5672
