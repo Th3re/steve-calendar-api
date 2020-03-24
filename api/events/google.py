@@ -7,4 +7,4 @@ from api.token.service import Token
 
 class GoogleEventsService(EventsService):
     def fetch(self, token: Token, calendar: Calendar) -> List[Event]:
-        return [Event(identifier='123123')]
+        return [Event(1,2,3,4,5,6,7)]

@@ -1,5 +1,6 @@
 import logging
 import pika
+import json
 from api.calendar.google import GoogleCalendarService
 from api.channel.rabbit import create_connection, create_rabbit_channel
 from api.events.google import GoogleEventsService
@@ -39,9 +40,10 @@ notification_service = TravelNotificationService(channel)
 
 
 def callback(ch, method, properties, body):
-    LOG.info(" [x] %r:%r" % (method.routing_key, body))
+    payload = json.loads(body)
+    LOG.info(" [x] %r:%r" % (method.routing_key, payload))
     _, user_id = method.routing_key.split('.')
-    location = Location(latitude=body['latitude'], longitde=body['longitude'])
+    location = Location(latitude=payload['latitude'], longitude=payload['longitude'])
     token = token_service.fetch(user_id)
     calendars = calendar_service.fetch(token)
     for calendar in calendars:
