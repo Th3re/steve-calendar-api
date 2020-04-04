@@ -25,12 +25,15 @@ services:
     env_file:
       - .google_credentials
     environment:
-      RABBIT_HOST: "rabbit"
-      RABBIT_PORT: "5672"
+      RABBIT_HOST_IN: 'rabbit'
+      RABBIT_EXCHANGE_IN: 'location'
+      RABBIT_BINDING_KEY_IN: 'location.*'
+      RABBIT_HOST_OUT: "rabbit"
+      RABBIT_PORT_OUT: "5672"
       RABBIT_CONNECTION_ATTEMPTS: 10
       RABBIT_RETRY_DELAY: 3
-      CHANNEL_EXCHANGE: "location"
-      CHANNEL_TOPIC: "location"
+      RABBIT_EXCHANGE_OUT: ''
+      RABBIT_TOPIC_OUT: 'travel'
     links:
       - rabbit
   rabbit:

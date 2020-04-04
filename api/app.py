@@ -8,35 +8,27 @@ from api.notification.travel import TravelNotificationService
 from api.token.steve import SteveTokenService
 from api.travel.google import GoogleTravelService
 from api.travel.service import Location
+from api.environment import read_environment
 
 
 logging.basicConfig(level=logging.INFO)
 
-HOST_IN = 'rabbit'
-EXCHANGE_IN = 'location'
-BINDING_KEY = 'location.*'
-
 LOG = logging.getLogger(__name__)
 
-RABBIT_HOST_OUT = 'rabbit'
-RABBIT_PORT_OUT = '5672'
-RABBIT_CONNECTION_ATTEMPTS = 10
-RABBIT_RETRY_DELAY = 3
-EXCHANGE_OUT = ''
-TOPIC = 'travel'
+env = read_environment()
 
 token_service = SteveTokenService()
 calendar_service = GoogleCalendarService()
 event_service = GoogleEventsService()
 travel_service = GoogleTravelService()
 rabbit_connection = create_connection(
-    RABBIT_HOST_OUT,
-    RABBIT_PORT_OUT,
-    RABBIT_CONNECTION_ATTEMPTS,
-    RABBIT_RETRY_DELAY
+    env.rabbit.host_out,
+    env.rabbit.port_out,
+    env.rabbit.connection_attempts,
+    env.rabbit.retry_delay
 )
-channel = create_rabbit_channel(rabbit_connection, EXCHANGE_OUT, TOPIC)
-notification_service = TravelNotificationService(channel)
+rabbit_channel = create_rabbit_channel(rabbit_connection, env.rabbit.exchange_out, env.rabbit.topic_out)
+notification_service = TravelNotificationService(rabbit_channel)
 
 
 def callback(ch, method, properties, body):
@@ -54,20 +46,16 @@ def callback(ch, method, properties, body):
 
 
 def main():
-    exchange_in = EXCHANGE_IN
-    host = HOST_IN
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=env.rabbit.host_in))
+    connection_channel = connection.channel()
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
-    channel = connection.channel()
-
-    channel.exchange_declare(exchange=exchange_in, exchange_type='topic')
-    result = channel.queue_declare('', exclusive=True)
+    connection_channel.exchange_declare(exchange=env.rabbit.exchange_in, exchange_type='topic')
+    result = connection_channel.queue_declare('', exclusive=True)
     queue_name = result.method.queue
 
-    binding_key = BINDING_KEY
-    channel.queue_bind(exchange=exchange_in, queue=queue_name, routing_key=binding_key)
+    connection_channel.queue_bind(exchange=env.rabbit.exchange_in, queue=queue_name, routing_key=env.rabbit.binding_key_in)
 
     LOG.info(' [*] Waiting for messages. To exit press CTRL+C')
 
-    channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
-    channel.start_consuming()
+    connection_channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    connection_channel.start_consuming()
