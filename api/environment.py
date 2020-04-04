@@ -42,6 +42,7 @@ class Environment(EnvClass):
     def __init__(self):
         self.google_credentials = Google()
         self.rabbit = Rabbit()
+        self.auth = Auth()
 
 
 def read_environment() -> Environment:

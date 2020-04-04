@@ -34,9 +34,10 @@ services:
       RABBIT_RETRY_DELAY: 3
       RABBIT_EXCHANGE_OUT: ''
       RABBIT_TOPIC_OUT: 'travel'
-      AUTH_URL: 'aaaa'
+      AUTH_URL: 'http://steve-auth-api:8080'
     links:
       - rabbit
+      - steve-auth-api
   rabbit:
     image: rabbitmq:3
     container_name: rabbit

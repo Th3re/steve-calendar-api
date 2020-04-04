@@ -17,7 +17,7 @@ LOG = logging.getLogger(__name__)
 
 env = read_environment()
 
-token_service = SteveTokenService()
+token_service = SteveTokenService(env.auth.url)
 calendar_service = GoogleCalendarService()
 event_service = GoogleEventsService()
 travel_service = GoogleTravelService()

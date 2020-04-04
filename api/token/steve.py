@@ -13,7 +13,7 @@ class SteveTokenService(TokenService):
         self.auth_url = auth_url
 
     def fetch(self, user_id: str) -> Token:
-        response = requests.get(f'{self.auth_url}/token/{user_id}')
+        response = requests.get(f'{self.auth_url}/token/{user_id}').json()
         token = response['token']
         code = response['code']
         message = response['message']
