@@ -22,9 +22,8 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    env_file:
-      - .google_credentials
     environment:
+      GOOGLE_HOST: 'https://www.googleapis.com'
       RABBIT_HOST_IN: 'rabbit'
       RABBIT_EXCHANGE_IN: 'location'
       RABBIT_BINDING_KEY_IN: 'location.*'

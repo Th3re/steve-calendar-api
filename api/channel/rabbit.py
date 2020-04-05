@@ -1,6 +1,5 @@
 import json
 import logging
-
 import pika.exceptions
 
 from api.channel.channel import Channel, NotificationMessage, ChannelResponse
@@ -9,10 +8,10 @@ LOG = logging.getLogger(__name__)
 
 
 def create_connection(host, port, connection_attempts, retry_delay):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host=host, port=port, connection_attempts=connection_attempts, retry_delay=retry_delay))
-    channel = connection.channel()
-    return channel
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=host, port=port,
+                                                                   connection_attempts=connection_attempts,
+                                                                   retry_delay=retry_delay))
+    return connection.channel()
 
 
 def create_rabbit_channel(channel, exchange, topic):
@@ -30,11 +29,10 @@ class RabbitChannel(Channel):
 
     @staticmethod
     def __serialize_message(message: NotificationMessage):
-        body = json.dumps(dict(
+        return json.dumps(dict(
             travel=str(message.travel),
             event=str(message.event),
         ))
-        return body
 
     def send(self, message: NotificationMessage) -> ChannelResponse:
         try:

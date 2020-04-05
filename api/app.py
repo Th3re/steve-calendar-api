@@ -1,14 +1,17 @@
-import logging
-import pika
 import json
-from api.calendar.google import GoogleCalendarService
-from api.channel.rabbit import create_connection, create_rabbit_channel
-from api.events.google import GoogleEventsService
-from api.notification.travel import TravelNotificationService
-from api.token.steve import SteveTokenService
-from api.travel.google import GoogleTravelService
+import pika
+import logging
+import traceback
+
 from api.travel.service import Location
 from api.environment import read_environment
+from api.token.steve import SteveTokenService
+from api.travel.google import GoogleTravelService
+from api.google.google_client import GoogleClient
+from api.events.google import GoogleEventsService
+from api.calendar.google import GoogleCalendarService
+from api.notification.travel import TravelNotificationService
+from api.channel.rabbit import create_connection, create_rabbit_channel
 
 
 logging.basicConfig(level=logging.INFO)
@@ -17,9 +20,10 @@ LOG = logging.getLogger(__name__)
 
 env = read_environment()
 
+client = GoogleClient(env.google.host)
 token_service = SteveTokenService(env.auth.url)
-calendar_service = GoogleCalendarService()
-event_service = GoogleEventsService()
+calendar_service = GoogleCalendarService(client)
+event_service = GoogleEventsService(client)
 travel_service = GoogleTravelService()
 rabbit_connection = create_connection(
     env.rabbit.host_out,
@@ -31,18 +35,23 @@ rabbit_channel = create_rabbit_channel(rabbit_connection, env.rabbit.exchange_ou
 notification_service = TravelNotificationService(rabbit_channel)
 
 
-def callback(ch, method, properties, body):
-    payload = json.loads(body)
-    LOG.info(" [x] %r:%r" % (method.routing_key, payload))
-    _, user_id = method.routing_key.split('.')
-    location = Location(latitude=payload['latitude'], longitude=payload['longitude'])
-    token = token_service.fetch(user_id)
-    calendars = calendar_service.fetch(token)
-    for calendar in calendars:
-        events = event_service.fetch(token, calendar)
-        for event in events:
-            travel = travel_service.estimate(location, event.location, mode='driving')
-            notification_service.notify(travel, event)
+def callback(_, method, __, body):
+    try:
+        payload = json.loads(body)
+        LOG.info(" [x] %r:%r" % (method.routing_key, payload))
+        _, user_id = method.routing_key.split('.')
+        location = Location(latitude=payload['latitude'], longitude=payload['longitude'])
+        token = token_service.fetch(user_id)
+        calendars = calendar_service.fetch(token)
+        for calendar in calendars:
+            LOG.info(f'Calendar: {calendar}')
+            events = event_service.fetch(token, calendar)
+            for event in events:
+                LOG.info(f'Event: {event}')
+                travel = travel_service.estimate(location, event.location, mode='driving')
+                notification_service.notify(travel, event)
+    except Exception as e:
+        LOG.error(f'{repr(e)}, {traceback.format_exc()}')
 
 
 def main():

@@ -1,14 +1,12 @@
 import os
 
+from api.model.representation import EnvPrint
 
-class EnvClass:
+
+class EnvClass(EnvPrint):
     def get(self, name: str) -> str:
         env_name = f'{self.__class__.__name__.upper()}_{name.upper()}'
         return os.environ[env_name]
-
-    def __repr__(self):
-        return ' '.join([f'{self.__class__.__name__.upper()}_{name.upper()}: {value}'
-                         for name, value in self.__dict__.items()])
 
 
 class Rabbit(EnvClass):
@@ -28,8 +26,7 @@ class Rabbit(EnvClass):
 class Google(EnvClass):
     def __init__(self):
         super()
-        self.client_id = self.get('client_id')
-        self.client_secret = self.get('client_secret')
+        self.host = self.get('host')
 
 
 class Auth(EnvClass):
@@ -40,7 +37,7 @@ class Auth(EnvClass):
 
 class Environment(EnvClass):
     def __init__(self):
-        self.google_credentials = Google()
+        self.google = Google()
         self.rabbit = Rabbit()
         self.auth = Auth()
 

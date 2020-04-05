@@ -1,22 +1,21 @@
-from typing import List
 import logging
 
-from googleapiclient.discovery import build
-
-from api.calendar.service import CalendarService, Calendar
+from typing import List
 from api.token.service import Token
+from api.calendar.service import CalendarService, Calendar
 
 
 LOG = logging.getLogger(__name__)
 
 
 class GoogleCalendarService(CalendarService):
+    def __init__(self, api_client):
+        self.api_client = api_client
+
     @staticmethod
-    def map_google_calendars(calendar_list):
-        return list(map(lambda calendar: Calendar(identifier=calendar['id']), calendar_list.get(['items'])))
+    def __retrieve_identifiers(calendars):
+        return list(map(lambda calendar: Calendar(identifier=calendar['id']), calendars.get('items')))
 
     def fetch(self, token: Token) -> List[Calendar]:
-        service = build('calendar', 'v3', credentials=token.value)
-        calendar_list = service.calendarList().list()
-        LOG.info(calendar_list)
-        return self.map_google_calendars(calendar_list)
+        calendars = self.api_client.get('calendar/v3/users/me/calendarList', token.value)
+        return self.__retrieve_identifiers(calendars)

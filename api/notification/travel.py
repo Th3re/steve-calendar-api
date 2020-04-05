@@ -1,8 +1,9 @@
 import logging
-from api.channel.channel import Channel, NotificationMessage
+
 from api.events.service import Event
-from api.notification.service import NotificationService
 from api.travel.service import Travel
+from api.notification.service import NotificationService
+from api.channel.channel import Channel, NotificationMessage
 
 
 LOG = logging.getLogger(__name__)

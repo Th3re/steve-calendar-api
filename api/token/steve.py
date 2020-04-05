@@ -1,5 +1,4 @@
 import logging
-
 import requests
 
 from api.token.service import TokenService, Token
