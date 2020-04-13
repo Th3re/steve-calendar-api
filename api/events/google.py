@@ -29,9 +29,16 @@ class GoogleEventsService(EventsService):
             timeMax=time_max_format
         )
 
+    @staticmethod
+    def __event_filter(event):
+        return event.location and event.location != "None" and event.start_time and event.end_time
+
+    def __filter_events(self, raw_events):
+        return list(filter(self.__event_filter, map(lambda e: Event.from_dict(e), raw_events)))
+
     def fetch(self, token: Token, calendar: Calendar) -> List[Event]:
         params = dict()
         params.update(**self.__time_range())
         calendar_identifier = urllib.parse.quote_plus(calendar.identifier)
         events = self.api_client.get(f'calendar/v3/calendars/{calendar_identifier}/events', token.value, params)
-        return [Event.from_dict(event) for event in events.get('items')]
+        return self.__filter_events(events.get('items'))
