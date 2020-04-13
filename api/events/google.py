@@ -1,3 +1,4 @@
+import urllib
 import logging
 
 from typing import List
@@ -15,5 +16,6 @@ class GoogleEventsService(EventsService):
         self.api_client = api_client
 
     def fetch(self, token: Token, calendar: Calendar) -> List[Event]:
-        events = self.api_client.get(f'calendar/v3/calendars/{calendar.identifier}/events', token.value)
+        calendar_identifier = urllib.parse.quote_plus(calendar.identifier)
+        events = self.api_client.get(f'calendar/v3/calendars/{calendar_identifier}/events', token.value)
         return [Event.from_dict(event) for event in events.get('items')]
