@@ -21,10 +21,11 @@ LOG = logging.getLogger(__name__)
 env = read_environment()
 
 client = GoogleClient(env.google.host)
+maps_client = GoogleClient(env.google.maps_host)
 token_service = SteveTokenService(env.auth.url)
 calendar_service = GoogleCalendarService(client)
 event_service = GoogleEventsService(client)
-travel_service = GoogleTravelService()
+travel_service = GoogleTravelService(maps_client, env.google.apikey)
 rabbit_connection = create_connection(
     env.rabbit.host_out,
     env.rabbit.port_out,

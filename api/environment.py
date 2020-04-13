@@ -27,6 +27,8 @@ class Google(EnvClass):
     def __init__(self):
         super()
         self.host = self.get('host')
+        self.apikey = self.get('apikey')
+        self.maps_host = self.get('maps_host')
 
 
 class Auth(EnvClass):

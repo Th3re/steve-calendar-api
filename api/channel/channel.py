@@ -1,11 +1,17 @@
 import abc
 import enum
-from collections import namedtuple
 
 from api.events.service import Event
 from api.travel.service import Travel
 
-Location = namedtuple("Location", ["latitude", "longitude"])
+
+class Location:
+    def __init__(self, latitude, longitude):
+        self.longitude = longitude
+        self.latitude = latitude
+
+    def __str__(self):
+        return f'{self.latitude},{self.longitude}'
 
 
 class NotificationMessage:
