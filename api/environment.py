@@ -37,11 +37,18 @@ class Auth(EnvClass):
         self.url = self.get('url')
 
 
+class Time(EnvClass):
+    def __init__(self):
+        super()
+        self.delta = float(self.get('delta'))
+
+
 class Environment(EnvClass):
     def __init__(self):
         self.google = Google()
         self.rabbit = Rabbit()
         self.auth = Auth()
+        self.time = Time()
 
 
 def read_environment() -> Environment:

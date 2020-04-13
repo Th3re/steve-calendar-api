@@ -33,7 +33,7 @@ rabbit_connection = create_connection(
     env.rabbit.retry_delay
 )
 rabbit_channel = create_rabbit_channel(rabbit_connection, env.rabbit.exchange_out, env.rabbit.topic_out)
-notification_service = TravelNotificationService(rabbit_channel)
+notification_service = TravelNotificationService(rabbit_channel, env.time.delta)
 
 
 def callback(_, method, __, body):
