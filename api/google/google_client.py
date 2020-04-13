@@ -9,8 +9,9 @@ class GoogleClient(Client):
     def __init__(self, host):
         self.host = host
 
-    def get(self, endpoint, token):
-        response = requests.get(f'{self.host}/{endpoint}', headers={'Authorization': f'Bearer {token}'})
+    def get(self, endpoint, token, params=None):
+        url = f'{self.host}/{endpoint}'
+        response = requests.get(url, params=params, headers={'Authorization': f'Bearer {token}'})
         if 200 <= response.status_code < 300:
             return response.json()
         if response.status_code == 401:
