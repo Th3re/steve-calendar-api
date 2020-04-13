@@ -1,13 +1,15 @@
 import abc
 import collections
 
+from api.model.representation import PrettyPrint
+
 Location = collections.namedtuple('Location', ['latitude', 'longitude'])
 
 
-class Travel:
-    def __init__(self, duration, steps):
+class Travel(PrettyPrint):
+    def __init__(self, duration, routes):
         self.duration = duration
-        self.steps = steps
+        self.routes = routes
 
 
 class TravelService(abc.ABC):

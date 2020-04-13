@@ -18,8 +18,10 @@ class GoogleTravelService(TravelService):
             destination=urllib.parse.quote_plus(destination),
             key=self.api_key
         )
+        # default mode: DRIVING
         response = self.api_client.get('maps/api/directions/json', '', params)
         if response.get('status') != "OK":
             return None
-        duration = response['routes'][0]['legs'][0]['duration']['value']
-        return Travel(duration=duration, steps=None)
+        routes = response['routes'][0]
+        duration = routes['legs'][0]['duration']['value']
+        return Travel(duration=duration, routes=routes)
