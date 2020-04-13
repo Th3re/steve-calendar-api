@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to docker registry
+      run: |
+        echo $DOCKER_SECRET | docker login --username th3re --password-stdin
+    - name: Upload docker image
+      run: |
+        IMAGE=th3re/steve-calendar-api
+        TAG=$GITHUB_SHA-$GITHUB_RUN_ID
+        docker build -t $IMAGE:$TAG
+        docker push $IMAGE:$TAG
+        docker tag $IMAGE:$TAG $IMAGE:latest
+        docker push $IMAGE:latest
