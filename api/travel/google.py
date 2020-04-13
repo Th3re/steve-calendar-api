@@ -22,6 +22,6 @@ class GoogleTravelService(TravelService):
         response = self.api_client.get('maps/api/directions/json', '', params)
         if response.get('status') != "OK":
             return None
-        routes = response['routes'][0]
-        duration = routes['legs'][0]['duration']['value']
-        return Travel(duration=duration, routes=routes)
+        route = response['routes'][0]
+        duration = route['legs'][0]['duration']['value']
+        return Travel(duration=duration, routes=route)
