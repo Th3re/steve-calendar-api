@@ -3,17 +3,17 @@ name: CI
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Login to docker registry
-      run: |
-        echo $DOCKER_SECRET | docker login --username th3re --password-stdin
+    - uses: azure/docker-login@v1
+      with:
+        login-server: 'default: index.docker.io'
+        username: 'th3re'
+        password: $DOCKER_SECRET
     - name: Upload docker image
       run: |
         IMAGE=th3re/steve-calendar-api
