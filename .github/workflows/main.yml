@@ -13,7 +13,7 @@ jobs:
       with:
         login-server: 'default: index.docker.io'
         username: 'th3re'
-        password: $DOCKER_SECRET
+        password: ${{ secrets.DOCKER_SECRET }}
     - name: Upload docker image
       run: |
         IMAGE=th3re/steve-calendar-api
