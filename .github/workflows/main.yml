@@ -1,8 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches: [ master ]
+on: [push]
 
 jobs:
   build:
@@ -21,3 +19,5 @@ jobs:
         docker push $IMAGE:$TAG
         docker tag $IMAGE:$TAG $IMAGE:latest
         docker push $IMAGE:latest
+        docker tag $IMAGE:$TAG $IMAGE:$GITHUB_REF
+        docker push $IMAGE:$GITHUB_REF
