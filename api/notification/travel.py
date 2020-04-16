@@ -15,15 +15,15 @@ class TravelNotificationService(NotificationService):
         self.channel = channel
         self.time_delta = time_delta
 
-    def notify(self, travel: Travel, event: Event):
-        message = NotificationMessage(travel, event)
+    def notify(self, user_id: str, travel: Travel, event: Event):
+        message = NotificationMessage(user_id, travel, event)
         start_time = event.start_time
         now = datetime.datetime.now().timestamp()
         time_left = start_time.timestamp() - now
         if time_left - travel.duration < 0:
-            LOG.debug(f'Not enough time to get to event {event}')
+            LOG.info(f'Not enough time to get to event {event}')
         elif 0 < time_left - travel.duration < self.time_delta:
             response = self.channel.send(message)
-            LOG.debug(response)
+            LOG.info(f'Notification sent: {response}')
         else:
-            LOG.debug(f'Too much time to notify event {event}')
+            LOG.info(f'Too much time to notify event {event}')

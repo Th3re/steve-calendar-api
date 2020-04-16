@@ -3,6 +3,7 @@ import enum
 
 from api.events.service import Event
 from api.travel.service import Travel
+from api.model.representation import PrettyPrint
 
 
 class Location:
@@ -14,13 +15,14 @@ class Location:
         return f'{self.latitude},{self.longitude}'
 
 
-class NotificationMessage:
-    def __init__(self, travel: Travel, event: Event):
+class NotificationMessage(PrettyPrint):
+    def __init__(self, user_id: str, travel: Travel, event: Event):
+        self.user_id = user_id
         self.travel = travel
         self.event = event
 
 
-class ChannelResponse:
+class ChannelResponse(PrettyPrint):
     class Status(enum.Enum):
         OK = "OK"
         ERROR = "ERROR"

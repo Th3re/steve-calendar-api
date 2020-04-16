@@ -50,7 +50,7 @@ def callback(_, method, __, body):
             for event in events:
                 LOG.info(f'Event: {event}')
                 travel = travel_service.estimate(location, event.location, mode='driving')
-                notification_service.notify(travel, event)
+                notification_service.notify(user_id, travel, event)
     except Exception as e:
         LOG.error(f'{repr(e)}, {traceback.format_exc()}')
 
