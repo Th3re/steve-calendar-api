@@ -32,6 +32,13 @@ class Event(PrettyPrint):
             return None
         return datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S%z')
 
+    def to_json(self):
+        body = vars(self)
+        format = '%Y-%m-%dT%H:%M:%S%z'
+        body['start_time'] = datetime.datetime.strftime(self.start_time, format)
+        body['end_time'] = datetime.datetime.strftime(self.end_time, format)
+        return body
+
     @staticmethod
     def from_dict(dictionary):
         start_time = Event.__parse_time(dictionary['start'])

@@ -30,8 +30,9 @@ class RabbitChannel(Channel):
     @staticmethod
     def __serialize_message(message: NotificationMessage):
         return json.dumps(dict(
-            travel=str(message.travel),
-            event=str(message.event),
+            user_id=message.user_id,
+            travel=vars(message.travel),
+            event=message.event.to_json(),
         ))
 
     def send(self, message: NotificationMessage) -> ChannelResponse:
