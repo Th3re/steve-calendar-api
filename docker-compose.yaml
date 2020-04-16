@@ -35,7 +35,7 @@ services:
       RABBIT_EXCHANGE_OUT: ''
       RABBIT_TOPIC_OUT: 'travel'
       AUTH_URL: 'http://steve-auth-api:8080'
-      TIME_DELTA: 7200
+      TIME_DELTA: 2592000
     env_file:
       - .google_credentials
     links:
