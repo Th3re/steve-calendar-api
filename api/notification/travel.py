@@ -3,8 +3,9 @@ import datetime
 
 from api.events.service import Event
 from api.travel.service import Travel
+from api.libs.channel.channel import Channel
+from api.channel.channel import NotificationMessage
 from api.notification.service import NotificationService
-from api.channel.channel import Channel, NotificationMessage
 
 
 LOG = logging.getLogger(__name__)
@@ -23,7 +24,7 @@ class TravelNotificationService(NotificationService):
         if time_left - travel.duration < 0:
             LOG.info(f'Not enough time to get to event {event}')
         elif 0 < time_left - travel.duration < self.time_delta:
-            response = self.channel.send(message)
+            response = self.channel.send('', message.serialize())
             LOG.info(f'Notification sent: {response}')
         else:
             LOG.info(f'Too much time to notify event {event}')

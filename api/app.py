@@ -10,8 +10,9 @@ from api.travel.google import GoogleTravelService
 from api.google.google_client import GoogleClient
 from api.events.google import GoogleEventsService
 from api.calendar.google import GoogleCalendarService
+from api.libs.channel.rabbit.channel import RabbitChannel
 from api.notification.travel import TravelNotificationService
-from api.channel.rabbit import create_connection, create_rabbit_channel
+from api.libs.channel.rabbit.environment import ChannelEnvironment, RabbitEnvironment
 
 
 logging.basicConfig(level=logging.INFO)
@@ -26,13 +27,11 @@ token_service = SteveTokenService(env.auth.url)
 calendar_service = GoogleCalendarService(client)
 event_service = GoogleEventsService(client)
 travel_service = GoogleTravelService(maps_client, env.google.apikey)
-rabbit_connection = create_connection(
-    env.rabbit.host_out,
-    env.rabbit.port_out,
-    env.rabbit.connection_attempts,
-    env.rabbit.retry_delay
-)
-rabbit_channel = create_rabbit_channel(rabbit_connection, env.rabbit.exchange_out, env.rabbit.topic_out)
+rabbit_channel = RabbitChannel.create(ChannelEnvironment(env.rabbit.exchange_out, env.rabbit.topic_out),
+                                      RabbitEnvironment(env.rabbit.host_out,
+                                                        int(env.rabbit.port_out),
+                                                        int(env.rabbit.connection_attempts),
+                                                        int(env.rabbit.retry_delay)))
 notification_service = TravelNotificationService(rabbit_channel, env.time.delta)
 
 
@@ -50,7 +49,10 @@ def callback(_, method, __, body):
             for event in events:
                 LOG.info(f'Event: {event}')
                 travel = travel_service.estimate(location, event.location, mode='driving')
-                notification_service.notify(user_id, travel, event)
+                if travel:
+                    notification_service.notify(user_id, travel, event)
+                else:
+                    LOG.error(f'Could not find a way from {location} to {event.location}')
     except Exception as e:
         LOG.error(f'{repr(e)}, {traceback.format_exc()}')
 
