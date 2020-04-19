@@ -5,7 +5,7 @@ services:
     image: steve-location-api:latest
     container_name: steve-location-api
     environment:
-      PORT: "8081"
+      SERVER_PORT: "8081"
       RABBIT_HOST: "rabbit"
       RABBIT_PORT: "5672"
       RABBIT_CONNECTION_ATTEMPTS: 10

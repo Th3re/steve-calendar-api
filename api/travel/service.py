@@ -1,7 +1,7 @@
 import abc
 import collections
 
-from api.model.representation import PrettyPrint
+from api.libs.representation.pretty import PrettyPrint
 
 Location = collections.namedtuple('Location', ['latitude', 'longitude'])
 

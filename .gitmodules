@@ -1,0 +1,4 @@
+[submodule "api/libs"]
+	path = api/libs
+	url = git@github.com:Th3re/steve-libraries.git
+	branch = master

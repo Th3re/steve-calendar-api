@@ -4,7 +4,7 @@ import datetime
 from typing import List, Optional
 from api.token.service import Token
 from api.calendar.service import Calendar
-from api.model.representation import PrettyPrint
+from api.libs.representation.pretty import PrettyPrint
 
 
 class Event(PrettyPrint):

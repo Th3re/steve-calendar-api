@@ -1,15 +1,8 @@
-import os
-
-from api.model.representation import EnvPrint
-
-
-class EnvClass(EnvPrint):
-    def get(self, name: str) -> str:
-        env_name = f'{self.__class__.__name__.upper()}_{name.upper()}'
-        return os.environ[env_name]
+from api.libs.environment.environmentreader import EnvironmentReader
+from api.libs.representation.pretty import PrettyPrint
 
 
-class Rabbit(EnvClass):
+class Rabbit(EnvironmentReader):
     def __init__(self):
         super()
         self.topic_out = self.get('topic_out')
@@ -23,7 +16,7 @@ class Rabbit(EnvClass):
         self.exchange_out = self.get('exchange_out')
 
 
-class Google(EnvClass):
+class Google(EnvironmentReader):
     def __init__(self):
         super()
         self.host = self.get('host')
@@ -31,25 +24,25 @@ class Google(EnvClass):
         self.maps_host = self.get('maps_host')
 
 
-class Auth(EnvClass):
+class Auth(EnvironmentReader):
     def __init__(self):
         super()
         self.url = self.get('url')
 
 
-class Time(EnvClass):
+class Time(EnvironmentReader):
     def __init__(self):
         super()
         self.delta = float(self.get('delta'))
 
 
-class Environment(EnvClass):
+class Environment(PrettyPrint):
     def __init__(self):
         self.google = Google()
         self.rabbit = Rabbit()
         self.auth = Auth()
         self.time = Time()
 
-
-def read_environment() -> Environment:
-    return Environment()
+    @staticmethod
+    def read():
+        return Environment()

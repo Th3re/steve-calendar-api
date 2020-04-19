@@ -3,7 +3,7 @@ import enum
 
 from api.events.service import Event
 from api.travel.service import Travel
-from api.model.representation import PrettyPrint
+from api.libs.representation.pretty import PrettyPrint
 
 
 class Location:

@@ -4,7 +4,7 @@ import logging
 import traceback
 
 from api.travel.service import Location
-from api.environment import read_environment
+from api.environment import Environment
 from api.token.steve import SteveTokenService
 from api.travel.google import GoogleTravelService
 from api.google.google_client import GoogleClient
@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 
 LOG = logging.getLogger(__name__)
 
-env = read_environment()
+env = Environment.read()
 
 client = GoogleClient(env.google.host)
 maps_client = GoogleClient(env.google.maps_host)

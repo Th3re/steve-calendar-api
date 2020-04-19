@@ -2,7 +2,7 @@ import abc
 
 from typing import List
 from api.token.service import Token
-from api.model.representation import PrettyPrint
+from api.libs.representation.pretty import PrettyPrint
 
 
 class Calendar(PrettyPrint):
