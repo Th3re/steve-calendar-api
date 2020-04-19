@@ -29,9 +29,9 @@ event_service = GoogleEventsService(client)
 travel_service = GoogleTravelService(maps_client, env.google.apikey)
 rabbit_channel = RabbitChannel.create(ChannelEnvironment(env.rabbit.exchange_out, env.rabbit.topic_out),
                                       RabbitEnvironment(env.rabbit.host_out,
-                                                        int(env.rabbit.port_out),
-                                                        int(env.rabbit.connection_attempts),
-                                                        int(env.rabbit.retry_delay)))
+                                                        env.rabbit.port_out,
+                                                        env.rabbit.connection_attempts,
+                                                        env.rabbit.retry_delay))
 notification_service = TravelNotificationService(rabbit_channel, env.time.delta)
 
 

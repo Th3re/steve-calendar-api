@@ -8,7 +8,7 @@ class Rabbit(EnvironmentReader):
         self.topic_out = self.get('topic_out')
         self.retry_delay = int(self.get('retry_delay'))
         self.connection_attempts = int(self.get('connection_attempts'))
-        self.port_out = self.get('port_out')
+        self.port_out = int(self.get('port_out'))
         self.host_out = self.get('host_out')
         self.binding_key_in = self.get('binding_key_in')
         self.exchange_in = self.get('exchange_in')
