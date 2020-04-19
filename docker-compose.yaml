@@ -32,8 +32,8 @@ services:
       RABBIT_PORT_OUT: "5672"
       RABBIT_CONNECTION_ATTEMPTS: 10
       RABBIT_RETRY_DELAY: 3
-      RABBIT_EXCHANGE_OUT: ''
-      RABBIT_TOPIC_OUT: 'travel'
+      RABBIT_EXCHANGE_OUT: 'travel'
+      RABBIT_TOPIC_OUT: ''
       AUTH_URL: 'http://steve-auth-api:8080'
       TIME_DELTA: 2592000
     env_file:
@@ -52,15 +52,14 @@ services:
     env_file:
       - .google_credentials
     environment:
-      PORT: "8080"
-      REDIRECT_URI: "http://127.0.0.1:8080/auth"
-      REQUEST_URL: "https://oauth2.googleapis.com/token"
+      SERVER_PORT: "8080"
+      GOOGLE_REDIRECT_URI: "http://127.0.0.1:8080/auth"
+      GOOGLE_REQUEST_URL: "https://oauth2.googleapis.com/token"
       MONGO_URI: mongodb://mongo:27017
       MONGO_USER: root
       MONGO_PASSWORD: root
       MONGO_DATABASE: auth
       MONGO_COLLECTION: credentials
-      CACHE_TTL: 360000
     ports:
       - 8080:8080
     links:

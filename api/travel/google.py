@@ -21,6 +21,7 @@ class GoogleTravelService(TravelService):
         # default mode: DRIVING
         response = self.api_client.get('maps/api/directions/json', '', params)
         if response.get('status') != "OK":
+            LOG.error(f'Could not retrieve travel data, response: {response}')
             return None
         route = response['routes'][0]
         duration = route['legs'][0]['duration']['value']

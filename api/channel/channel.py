@@ -1,8 +1,8 @@
-import abc
-import enum
+import json
 
 from api.events.service import Event
 from api.travel.service import Travel
+from api.libs.channel.channel import Message
 from api.libs.representation.pretty import PrettyPrint
 
 
@@ -15,24 +15,19 @@ class Location:
         return f'{self.latitude},{self.longitude}'
 
 
-class NotificationMessage(PrettyPrint):
+class NotificationMessage(PrettyPrint, Message):
     def __init__(self, user_id: str, travel: Travel, event: Event):
         self.user_id = user_id
         self.travel = travel
         self.event = event
 
+    def serialize(self):
+        return json.dumps(dict(
+              user_id=self.user_id,
+              travel=vars(self.travel),
+              event=self.event.to_json(),
+          ))
 
-class ChannelResponse(PrettyPrint):
-    class Status(enum.Enum):
-        OK = "OK"
-        ERROR = "ERROR"
-
-    def __init__(self, message: str, status: Status):
-        self.message = message
-        self.status = status
-
-
-class Channel(abc.ABC):
-    @abc.abstractmethod
-    def send(self, message: NotificationMessage) -> ChannelResponse:
+    @classmethod
+    def deserialize(cls, raw):
         pass
