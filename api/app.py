@@ -3,6 +3,7 @@ import pika
 import logging
 import traceback
 
+from api.libs.cache.memory import MemoryAccessCache
 from api.travel.service import Location
 from api.environment import Environment
 from api.token.steve import SteveTokenService
@@ -32,7 +33,7 @@ rabbit_channel = RabbitChannel.create(ChannelEnvironment(env.rabbit.exchange_out
                                                         env.rabbit.port_out,
                                                         env.rabbit.connection_attempts,
                                                         env.rabbit.retry_delay))
-notification_service = TravelNotificationService(rabbit_channel, env.time.delta)
+notification_service = TravelNotificationService(rabbit_channel, env.time.delta, MemoryAccessCache())
 
 
 def callback(_, method, __, body):
