@@ -33,7 +33,7 @@ class TravelNotificationService(NotificationService):
                 return
             notification_time = datetime.datetime.now()
             self.cache.set(event.identifier, notification_time, time_to_leave)
-            response = self.channel.send(message)
+            response = self.channel.send('', message.serialize())
             LOG.info(f'Notification sent: {response} for event {event}')
         else:
             LOG.info(f'Too much time to notify event {event.identifier}')
