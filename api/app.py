@@ -46,10 +46,11 @@ def callback(_, method, __, body):
         location = Location(latitude=payload['latitude'], longitude=payload['longitude'])
         token = token_service.fetch(user_id)
         calendars = calendar_service.fetch(token)
+        all_events = []
         for calendar in calendars:
             LOG.info(f'Calendar: {calendar}')
             events = event_service.fetch(token, calendar)
-            steve_events_client.store(user_id, events)
+            all_events.extend(events)
             for event in events:
                 LOG.info(f'Event: {event}')
                 travel = travel_service.estimate(location, event.location, mode='driving')
@@ -57,6 +58,7 @@ def callback(_, method, __, body):
                     notification_service.notify(user_id, travel, event)
                 else:
                     LOG.error(f'Could not find a way from {location} to {event.location}')
+        steve_events_client.store(user_id, all_events)
     except Exception as e:
         LOG.error(f'{repr(e)}, {traceback.format_exc()}')
 

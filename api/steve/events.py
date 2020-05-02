@@ -1,6 +1,10 @@
+from datetime import datetime
+
 import requests
 import logging
 from http import HTTPStatus
+
+from api.events.service import Event
 
 LOG = logging.getLogger(__name__)
 
