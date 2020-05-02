@@ -3,11 +3,8 @@ import pika
 import logging
 import traceback
 
-<<<<<<< HEAD
 from api.libs.cache.memory import MemoryAccessCache
-=======
 from api.steve.events import EventsAPIClient
->>>>>>> Store events in Events API
 from api.travel.service import Location
 from api.environment import Environment
 from api.token.steve import SteveTokenService
