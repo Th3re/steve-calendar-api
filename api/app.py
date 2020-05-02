@@ -3,7 +3,11 @@ import pika
 import logging
 import traceback
 
+<<<<<<< HEAD
 from api.libs.cache.memory import MemoryAccessCache
+=======
+from api.steve.events import EventsAPIClient
+>>>>>>> Store events in Events API
 from api.travel.service import Location
 from api.environment import Environment
 from api.token.steve import SteveTokenService
@@ -34,6 +38,7 @@ rabbit_channel = RabbitChannel.create(ChannelEnvironment(env.rabbit.exchange_out
                                                         env.rabbit.connection_attempts,
                                                         env.rabbit.retry_delay))
 notification_service = TravelNotificationService(rabbit_channel, env.time.delta, MemoryAccessCache())
+steve_events_client = EventsAPIClient(env.steve.events_url)
 
 
 def callback(_, method, __, body):
@@ -47,6 +52,7 @@ def callback(_, method, __, body):
         for calendar in calendars:
             LOG.info(f'Calendar: {calendar}')
             events = event_service.fetch(token, calendar)
+            steve_events_client.store(user_id, events)
             for event in events:
                 LOG.info(f'Event: {event}')
                 travel = travel_service.estimate(location, event.location, mode='driving')

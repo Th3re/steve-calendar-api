@@ -36,12 +36,19 @@ class Time(EnvironmentReader):
         self.delta = float(self.get('delta'))
 
 
+class Steve(EnvironmentReader):
+    def __init__(self):
+        super()
+        self.events_url = self.get('events_url')
+
+
 class Environment(PrettyPrint):
     def __init__(self):
         self.google = Google()
         self.rabbit = Rabbit()
         self.auth = Auth()
         self.time = Time()
+        self.steve = Steve()
 
     @staticmethod
     def read():
