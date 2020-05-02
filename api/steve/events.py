@@ -15,6 +15,7 @@ class EventsAPIClient:
             userId=identifier,
             events=data
         )
+        LOG.info(payload)
         response = requests.post(f'{self.api_url}/store', json=payload)
         LOG.info(response)
         if response.status_code != HTTPStatus.OK:
