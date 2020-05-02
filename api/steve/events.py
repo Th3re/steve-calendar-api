@@ -10,10 +10,10 @@ class EventsAPIClient:
         self.api_url = api_url
 
     def store(self, identifier, events):
-        events = list(map(lambda x: x.to_json(), events))
+        data = list(map(lambda x: x.to_json(), events))
         payload = dict(
             userId=identifier,
-            events=events
+            events=data
         )
         response = requests.post(f'{self.api_url}/store', json=payload)
         LOG.info(response)
