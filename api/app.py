@@ -9,7 +9,7 @@ from api.travel.service import Location
 from api.environment import Environment
 from api.token.steve import SteveTokenService
 from api.travel.google import GoogleTravelService
-from api.google.google_client import GoogleClient
+from api.libs.google.google_client import GoogleClient
 from api.events.google import GoogleEventsService
 from api.calendar.google import GoogleCalendarService
 from api.libs.channel.rabbit.channel import RabbitChannel
