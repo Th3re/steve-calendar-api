@@ -4,7 +4,7 @@ import datetime
 
 from typing import List
 from api.token.service import Token
-from api.google.client import Client
+from api.libs.google.client import Client
 from api.calendar.service import Calendar
 from api.events.service import EventsService, Event
 
