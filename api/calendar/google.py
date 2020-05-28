@@ -19,5 +19,6 @@ class GoogleCalendarService(CalendarService):
                            map(lambda calendar: Calendar(identifier=calendar['id']), calendars.get('items'))))
 
     def fetch(self, token: Token) -> List[Calendar]:
-        calendars = self.api_client.get('calendar/v3/users/me/calendarList', token.value)
+        params = {}
+        calendars = self.api_client.get('calendar/v3/users/me/calendarList', token.value, params)
         return self.__retrieve_identifiers(calendars)
