@@ -3,10 +3,12 @@ import logging
 import datetime
 
 from typing import List
+
+from api.libs.events.event import Event
 from api.token.service import Token
 from api.libs.google.client import Client
 from api.calendar.service import Calendar
-from api.events.service import EventsService, Event
+from api.events.service import EventsService
 
 
 LOG = logging.getLogger(__name__)
